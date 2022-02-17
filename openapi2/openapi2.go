@@ -195,7 +195,7 @@ type Parameter struct {
 	ExclusiveMax     bool                `json:"exclusiveMaximum,omitempty" yaml:"exclusiveMaximum,omitempty"`
 	Schema           *openapi3.SchemaRef `json:"schema,omitempty" yaml:"schema,omitempty"`
 	Items            *openapi3.SchemaRef `json:"items,omitempty" yaml:"items,omitempty"`
-	Enum             []interface{}       `json:"enum,omitempty" yaml:"enum,omitempty"`
+	Enum             *openapi3.EnumRef   `json:"enum,omitempty" yaml:"enum,omitempty"`
 	MultipleOf       *float64            `json:"multipleOf,omitempty" yaml:"multipleOf,omitempty"`
 	Minimum          *float64            `json:"minimum,omitempty" yaml:"minimum,omitempty"`
 	Maximum          *float64            `json:"maximum,omitempty" yaml:"maximum,omitempty"`

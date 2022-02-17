@@ -304,3 +304,41 @@ func (value SecuritySchemeRef) JSONLookup(token string) (interface{}, error) {
 	ptr, _, err := jsonpointer.GetForToken(value.Value, token)
 	return ptr, err
 }
+
+// SchemaRef represents either a Schema or a $ref to a Schema.
+// When serializing and both fields are set, Ref is preferred over Value.
+type EnumRef struct {
+	Ref   string
+	Value []interface{}
+}
+
+var _ jsonpointer.JSONPointable = (*EnumRef)(nil)
+
+func NewEnumRef(ref string, value []interface{}) *EnumRef {
+	return &EnumRef{
+		Ref:   ref,
+		Value: value,
+	}
+}
+
+func (value *EnumRef) MarshalJSON() ([]byte, error) {
+	return jsoninfo.MarshalRef(value.Ref, value.Value)
+}
+
+func (value *EnumRef) UnmarshalJSON(data []byte) error {
+	return jsoninfo.UnmarshalRef(data, &value.Ref, &value.Value)
+}
+
+// TODO: update this?
+func (value *EnumRef) Validate(ctx context.Context) error {
+	return nil
+}
+
+func (value EnumRef) JSONLookup(token string) (interface{}, error) {
+	if token == "$ref" {
+		return value.Ref, nil
+	}
+
+	ptr, _, err := jsonpointer.GetForToken(value.Value, token)
+	return ptr, err
+}

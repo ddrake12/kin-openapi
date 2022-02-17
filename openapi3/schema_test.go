@@ -782,12 +782,12 @@ var schemaExamples = []schemaExample{
 		Schema: &Schema{
 			Not: &SchemaRef{
 				Value: &Schema{
-					Enum: []interface{}{
+					Enum: &EnumRef{Value: []interface{}{
 						nil,
 						true,
 						3.14,
 						"not this",
-					},
+					}},
 				},
 			},
 		},

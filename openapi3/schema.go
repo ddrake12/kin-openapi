@@ -113,7 +113,7 @@ type Schema struct {
 	Title        string        `json:"title,omitempty" yaml:"title,omitempty"`
 	Format       string        `json:"format,omitempty" yaml:"format,omitempty"`
 	Description  string        `json:"description,omitempty" yaml:"description,omitempty"`
-	Enum         []interface{} `json:"enum,omitempty" yaml:"enum,omitempty"`
+	Enum         *EnumRef      `json:"enum,omitempty" yaml:"enum,omitempty"`
 	Default      interface{}   `json:"default,omitempty" yaml:"default,omitempty"`
 	Example      interface{}   `json:"example,omitempty" yaml:"example,omitempty"`
 	ExternalDocs *ExternalDocs `json:"externalDocs,omitempty" yaml:"externalDocs,omitempty"`
@@ -401,7 +401,14 @@ func (schema *Schema) WithExclusiveMax(value bool) *Schema {
 }
 
 func (schema *Schema) WithEnum(values ...interface{}) *Schema {
-	schema.Enum = values
+	schema.Enum = &EnumRef{
+		Value: values,
+	}
+	return schema
+}
+
+func (schema *Schema) WithEnumRef(name string, ref *EnumRef) *Schema {
+	schema.Enum = ref
 	return schema
 }
 
@@ -542,7 +549,7 @@ func (schema *Schema) WithAdditionalProperties(v *Schema) *Schema {
 }
 
 func (schema *Schema) IsEmpty() bool {
-	if schema.Type != "" || schema.Format != "" || len(schema.Enum) != 0 ||
+	if schema.Type != "" || schema.Format != "" || len(schema.Enum.Value) != 0 ||
 		schema.UniqueItems || schema.ExclusiveMin || schema.ExclusiveMax ||
 		schema.Nullable || schema.ReadOnly || schema.WriteOnly || schema.AllowEmptyValue ||
 		schema.Min != nil || schema.Max != nil || schema.MultipleOf != nil ||
@@ -820,7 +827,7 @@ func (schema *Schema) visitJSON(settings *schemaValidationSettings, value interf
 }
 
 func (schema *Schema) visitSetOperations(settings *schemaValidationSettings, value interface{}) (err error) {
-	if enum := schema.Enum; len(enum) != 0 {
+	if enum := schema.Enum.Value; len(enum) != 0 {
 		for _, v := range enum {
 			if value == v {
 				return

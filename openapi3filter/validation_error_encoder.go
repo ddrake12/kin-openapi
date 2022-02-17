@@ -142,8 +142,8 @@ func convertSchemaError(e *RequestError, innerErr *openapi3.SchemaError) *Valida
 
 	// Add details on allowed values for enums
 	if innerErr.SchemaField == "enum" {
-		enums := make([]string, 0, len(innerErr.Schema.Enum))
-		for _, enum := range innerErr.Schema.Enum {
+		enums := make([]string, 0, len(innerErr.Schema.Enum.Value))
+		for _, enum := range innerErr.Schema.Enum.Value {
 			enums = append(enums, fmt.Sprintf("%v", enum))
 		}
 		cErr.Detail = fmt.Sprintf("value %v at %s must be one of: %s",

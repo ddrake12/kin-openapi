@@ -361,7 +361,7 @@ func ExampleSchemaCustomizer() {
 		}
 		if tag.Get("myenumtag") != "" {
 			for _, s := range strings.Split(tag.Get("myenumtag"), ",") {
-				schema.Enum = append(schema.Enum, s)
+				schema.Enum.Value = append(schema.Enum.Value, s)
 			}
 		}
 		return nil
